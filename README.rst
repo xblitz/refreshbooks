@@ -68,13 +68,13 @@ underlying XML.
 If you are having trouble accessing items as in:
 
     items_response = c.items.list()
-    for item in item_response.items.item:
+    for item in items_response.items.item:
         print item.item_id
 
-Adjust your syntax to the following:
+Adjust your syntax to use dictionary item lookup:
 
     items_response = c.items.list()
-    for item in item_response['items'].item:
+    for item in items_response['items'].item:
         print item.item_id
 
 ObjectifiedDataElement provides a method named items which shadows the 
