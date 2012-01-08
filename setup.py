@@ -39,7 +39,7 @@ setup(
         'lxml',
         'oauth',
         'functional',
-        'httplib2 == 0.5.0'
+        'httplib2 >= 0.7.2'
     ],
     
     test_suite = 'nose.collector'
