@@ -43,14 +43,14 @@ default_response_decoder = functional.compose(
 def logging_request_encoder(method, **params):
     encoded = default_request_encoder(method, **params)
     
-    print sys.stderr, "--- Request (%r, %r) ---" % (method, params)
-    print encoded
+    print >>sys.stderr, "--- Request (%r, %r) ---" % (method, params)
+    print >>sys.stderr, encoded
     
     return encoded
 
 def logging_response_decoder(response):
-    print sys.stderr, "--- Response ---"
-    print response
+    print >>sys.stderr, "--- Response ---"
+    print >>sys.stderr, response
     
     return default_response_decoder(response)
 
