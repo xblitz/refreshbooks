@@ -37,10 +37,12 @@ setup(
     ],
     install_requires=[
         'lxml',
-        'oauth',
         'functional',
         'httplib2 >= 0.7.2'
     ],
+    extras_require={
+        'oauth': ['oauth']
+    },
     
     test_suite = 'nose.collector'
 )

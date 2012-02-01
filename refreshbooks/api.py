@@ -4,9 +4,15 @@ import functools
 
 import functional
 from lxml import objectify
-import oauth.oauth as oauth
 
 from refreshbooks import client, adapters, transport
+
+try:
+    from refreshbooks.optional import oauth as os
+    _create_oauth_client = os.OAuthClient
+except ImportError:
+    def _create_oauth_client(*args, **kwargs):
+        raise NotImplementedError('oauth support requires the "oauth" module.')
 
 def api_url(domain):
     """Returns the Freshbooks API URL for a given domain.
@@ -133,19 +139,16 @@ def OAuthClient(
     user agent string passed to FreshBooks. If unset, a default user agent
     string is used.
     """
-    
-    consumer = oauth.OAuthConsumer(consumer_key, consumer_secret)
-    token = oauth.OAuthToken(token, token_secret)
-    
-    return AuthorizingClient(
+    return _create_oauth_client(
+        AuthorizingClient,
         domain,
-        transport.OAuthAuthorization(
-            consumer,
-            token
-        ),
-        request_encoder,
-        response_decoder,
-        user_agent=user_agent
+        consumer_key,
+        consumer_secret,
+        token,
+        token_secret,
+        user_agent=user_agent,
+        request_encoder=request_encoder,
+        response_decoder=response_decoder
     )
 
 def list_element_type(_name, **kwargs):

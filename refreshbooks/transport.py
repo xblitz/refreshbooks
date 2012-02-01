@@ -1,32 +1,14 @@
 import base64
 import httplib
 import httplib2
-import oauth.oauth as oauth
 
-class OAuthAuthorization(object):
-    """Generates headers for an OAuth Core 1.0 Revision A (say that three 
-    times fast) request, given an oauth.Consumer and an oauth.Token.
+try:
+    from refreshbooks.optional import oauth as os
     
-        >>> import oauth.oauth as oauth
-        >>> consumer = oauth.OAuthConsumer("EXAMPLE", "CONSUMER")
-        >>> token = oauth.OAuthToken("EXAMPLE", "TOKEN")
-        >>> auth = OAuthAuthorization(consumer, token)
-        >>> auth() # doctest:+ELLIPSIS
-        {'Authorization': 'OAuth realm="", oauth_nonce="...", oauth_timestamp="...", oauth_consumer_key="EXAMPLE", oauth_signature_method="PLAINTEXT", oauth_version="1.0", oauth_token="EXAMPLE", oauth_signature="CONSUMER%26TOKEN"'}
-    
-    """
-    def __init__(self, consumer, token, sig_method=oauth.OAuthSignatureMethod_PLAINTEXT()):
-        self.consumer = consumer
-        self.token = token
-        self.sig_method = sig_method
-
-    def __call__(self):
-        oauth_request = oauth.OAuthRequest.from_consumer_and_token(
-            self.consumer,
-            token=self.token
-        )
-        oauth_request.sign_request(self.sig_method, self.consumer, self.token)
-        return oauth_request.to_header()
+    OAuthAuthorization = os.OAuthAuthorization
+except ImportError:
+    def OAuthAuthorization(consumer, token, sig_method=None):
+        raise NotImplementedError('oauth support requires the "oauth" module.')
 
 class TokenAuthorization(object):
     """Generates HTTP BASIC authentication headers obeying FreshBooks'
@@ -36,7 +18,8 @@ class TokenAuthorization(object):
         >>> auth()
         {'Authorization': 'Basic bW9ua2V5Og=='}
     
-    Prefer OAuthAuthorization, above, for new development.
+    Prefer OAuthAuthorization, from refreshbooks.optional.oauth, for new
+    development.
     """
     def __init__(self, token):
         # See RFC 2617.
