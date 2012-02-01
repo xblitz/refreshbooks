@@ -37,7 +37,6 @@ setup(
     ],
     install_requires=[
         'lxml',
-        'functional',
         'httplib2 >= 0.7.2'
     ],
     extras_require={

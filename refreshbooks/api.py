@@ -2,7 +2,6 @@ import decimal
 import sys
 import functools
 
-import functional
 from lxml import objectify
 
 from refreshbooks import client, adapters, transport
@@ -40,11 +39,15 @@ decimal_type = objectify.PyType('decimal', check_decimal_element,
                                 DecimalElement)
 decimal_type.register(before='float')
 
-default_request_encoder = adapters.xml_request
-default_response_decoder = functional.compose(
-    adapters.fail_to_exception_response,
-    objectify.fromstring
-)
+def default_request_encoder(request):
+    return adapters.xml_request(request)
+
+def default_response_decoder(response):
+    adapters.fail_to_exception_response(
+        objectify.fromstring(
+            response
+        )
+    )
 
 def logging_request_encoder(method, **params):
     encoded = default_request_encoder(method, **params)
