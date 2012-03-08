@@ -39,14 +39,11 @@ decimal_type = objectify.PyType('decimal', check_decimal_element,
                                 DecimalElement)
 decimal_type.register(before='float')
 
-def default_request_encoder(request):
-    return adapters.xml_request(request)
+default_request_encoder = adapters.xml_request
 
-def default_response_decoder(response):
-    adapters.fail_to_exception_response(
-        objectify.fromstring(
-            response
-        )
+def default_response_decoder(*args, **kwargs):
+    return adapters.fail_to_exception_response(
+        objectify.fromstring(*args, **kwargs)
     )
 
 def logging_request_encoder(method, **params):
