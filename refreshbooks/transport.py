@@ -1,6 +1,5 @@
 import base64
 import httplib
-import httplib2
 
 try:
     from refreshbooks.optional import oauth as os
@@ -9,6 +8,13 @@ try:
 except ImportError:
     def OAuthAuthorization(consumer, token, sig_method=None):
         raise NotImplementedError('oauth support requires the "oauth" module.')
+
+try:
+    from refreshbooks.transports import use_httplib2 as transport
+except ImportError:
+    import warnings
+    warnings.warn("Unable to load httplib2 transport, falling back to urllib2. SSL cert verification disabled.")
+    from refreshbooks.transports import use_urllib2 as transport
 
 class TokenAuthorization(object):
     """Generates HTTP BASIC authentication headers obeying FreshBooks'
@@ -62,21 +68,4 @@ class TransportException(Exception):
     def __repr__(self):
         return "TransportException(%r, %r)" % (self.status, self.content)
 
-class HttpTransport(object):
-    def __init__(self, url, headers_factory):
-        self.client = httplib2.Http()
-        self.url = url
-        self.headers_factory = headers_factory
-    
-    def __call__(self, entity):
-        
-        resp, content = self.client.request(
-            self.url,
-            'POST',
-            headers=self.headers_factory(),
-            body=entity
-        )
-        if resp.status >= 400:
-            raise TransportException(resp.status, content)
-        
-        return content
+HttpTransport = transport.Transport
