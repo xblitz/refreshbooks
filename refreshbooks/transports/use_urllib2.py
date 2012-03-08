@@ -14,4 +14,4 @@ class Transport(object):
         try:
             return u.urlopen(request).read()
         except u.HTTPError, e:
-            raise TransportException(e.code)
+            raise TransportException(e.code, e.read())
