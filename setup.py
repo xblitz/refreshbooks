@@ -25,7 +25,7 @@ setup(
     ],
     
     packages=[
-        'refreshbooks'
+        'refreshbooks', 'refreshbooks.transports', 'refreshbooks.optional'
     ],
     
     setup_requires=[
