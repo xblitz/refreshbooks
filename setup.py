@@ -40,7 +40,8 @@ setup(
     ],
     extras_require={
         'oauth': ['oauth'],
-        'httplib2': ['httplib2 >= 0.7.2']
+        'httplib2': ['httplib2 >= 0.7.2'],
+        'requests': ['requests >= 0.11.1']
     },
     
     test_suite = 'nose.collector'

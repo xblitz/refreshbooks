@@ -9,11 +9,21 @@ except ImportError:
     def OAuthAuthorization(consumer, token, sig_method=None):
         raise NotImplementedError('oauth support requires the "oauth" module.')
 
+transport = None
 try:
-    from refreshbooks.transports import use_httplib2 as transport
+    from refreshbooks.transports import use_requests as transport
 except ImportError:
+    raise
+
+if transport is None:
+    try:
+        from refreshbooks.transports import use_httplib2 as transport
+    except ImportError:
+        pass
+
+if transport is None:
     import warnings
-    warnings.warn("Unable to load httplib2 transport, falling back to urllib2. SSL cert verification disabled.")
+    warnings.warn("Unable to load requests or httplib2 transports   , falling back to urllib2. SSL cert verification disabled.")
     from refreshbooks.transports import use_urllib2 as transport
 
 class TokenAuthorization(object):
