@@ -15,6 +15,6 @@ class Transport(object):
             data=entity
         )
         if resp.status_code >= 400:
-            raise exc.TransportException(resp.status, content)
+            raise exc.TransportException(resp.status_code, resp.content)
         
         return resp.content
