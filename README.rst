@@ -83,11 +83,11 @@ syntax is the known work-around.
 
 To run tests:
 
-    nosetests
+    python setup.py nosetests
 
-To run ALL the tests (including integration tests that hit http://httpstat.us):
+To run network-accessing integration tests against httpstat.us:
 
-    nosetests --attr=
+    python setup.py nosetests --attr=integration
 
 References:
 

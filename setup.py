@@ -29,7 +29,8 @@ setup(
     ],
     
     setup_requires=[
-        'setuptools-git'
+        'setuptools-git',
+        'nose'
     ],
     tests_require=[
         'nose',
