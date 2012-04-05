@@ -1,5 +1,7 @@
 import urllib2 as u
 
+from refreshbooks import exceptions as exc
+
 class Transport(object):
     def __init__(self, url, headers_factory):
         self.url = url
@@ -14,4 +16,4 @@ class Transport(object):
         try:
             return u.urlopen(request).read()
         except u.HTTPError, e:
-            raise TransportException(e.code, e.read())
+            raise exc.TransportException(e.code, e.read())
