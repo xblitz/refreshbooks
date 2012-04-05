@@ -12,11 +12,16 @@ except ImportError:
         raise NotImplementedError('oauth support requires the "oauth" module.')
 
 try:
-    from refreshbooks.transports import use_httplib2 as transport
+    from refreshbooks.transports import use_requests as transport
 except ImportError:
-    import warnings
-    warnings.warn("Unable to load httplib2 transport, falling back to urllib2. SSL cert verification disabled.")
-    from refreshbooks.transports import use_urllib2 as transport
+    try:
+        from refreshbooks.transports import use_httplib2 as transport
+    except ImportError:
+        import warnings
+        warnings.warn(
+            "Unable to load requests or httplib2 transports, falling back to urllib2. SSL cert verification disabled."
+        )
+        from refreshbooks.transports import use_urllib2 as transport
 
 class TokenAuthorization(object):
     """Generates HTTP BASIC authentication headers obeying FreshBooks'
