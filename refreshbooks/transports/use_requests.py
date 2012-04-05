@@ -1,5 +1,7 @@
 import requests
 
+from refreshbooks import exceptions as exc
+
 class Transport(object):
     def __init__(self, url, headers_factory):
         self.url = url
@@ -13,6 +15,6 @@ class Transport(object):
             data=entity
         )
         if resp.status_code >= 400:
-            raise TransportException(resp.status, content)
+            raise exc.TransportException(resp.status, content)
         
         return resp.content
