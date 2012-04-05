@@ -81,6 +81,14 @@ ObjectifiedDataElement provides a method named items which shadows the
 items element in the response. Accessing items with dictionary lookup 
 syntax is the known work-around.
 
+To run tests:
+
+    nosetests
+
+To run ALL the tests (including integration tests that hit http://httpstat.us):
+
+    nosetests --attr=
+
 References:
 
  - http://developers.freshbooks.com/ - The FreshBooks API
