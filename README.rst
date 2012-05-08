@@ -12,29 +12,30 @@ invoices, clients, and other data::
         user_agent='Example/1.0'
     )
     
-    response = c.invoice.create(
-        invoice=dict(
-            client_id='8',
-            lines=[
-                api.types.line(
-                    name='Yard Work',
-                    unit_cost='10',
-                    quantity='4'
-                )
-            ]
-        )
-    )
+                                          # XML structure inferred from args
+    response = c.invoice.create(          # <request method="invoice.create">
+        invoice=dict(                     #   <invoice>
+            client_id='8',                #     <client_id>8</client_id>
+            lines=[                       #     <lines>
+                api.types.line(           #       <line>
+                    name='Yard Work',     #         <name>Yard Work</name>
+                    unit_cost='10',       #         <unit_cost>10</unit_cost>
+                    quantity='4'          #         <quantity>4</quantity>
+                )                         #       </line>
+            ]                             #     </lines>
+        )                                 #   </invoice>
+    )                                     # </request>
     
-    invoice_response = c.invoice.get(
-        invoice_id=response.invoice_id
-    )
+    invoice_response = c.invoice.get(     # <request method="invoice.get">
+        invoice_id=response.invoice_id    #     <invoice_id>...</invoice_id>
+    )                                     # </request>
     
     print "New invoice created: #%s (id %s)" % (
         invoice_response.invoice.number,
         invoice_response.invoice.invoice_id
     )
     
-    invoices_response = c.invoice.list()
+    invoices_response = c.invoice.list() # <request method="invoice.list" />
     
     print "There are %s pages of invoices." % (
         invoices_response.invoices.attrib['pages'],
