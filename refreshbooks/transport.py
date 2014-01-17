@@ -1,5 +1,4 @@
 import base64
-import httplib
 
 from refreshbooks import exceptions
 
@@ -35,8 +34,13 @@ class TokenAuthorization(object):
     development.
     """
     def __init__(self, token):
+        try:
+            token = token.encode('US-ASCII')
+        except NameError:
+            # token already byte string.
+            pass
         # See RFC 2617.
-        base64_user_pass = base64.b64encode("%s:" % (token, ))
+        base64_user_pass = base64.b64encode(token + b':').decode('US-ASCII')
         
         self.headers = {
             'Authorization': 'Basic %s' % (base64_user_pass, )

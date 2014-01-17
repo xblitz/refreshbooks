@@ -46,7 +46,7 @@ def encode_as_dict(_name, **kwargs):
     # To make collisions between the first positional parameter and the 
     # keyword parameters unlikely, that's why.
     return elements.type(_name, [
-        encode_parameter(name, value) for (name, value) in kwargs.iteritems()
+        encode_parameter(name, value) for (name, value) in kwargs.items()
     ])
 
 def encode_as_list_of_dicts(name, *args):
@@ -85,7 +85,7 @@ def xml_request(method, **params):
         method,
         [
             encode_parameter(name, value)
-            for (name, value) in params.iteritems()
+            for (name, value) in params.items()
         ]
     )
     
