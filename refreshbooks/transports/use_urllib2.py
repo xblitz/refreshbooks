@@ -1,4 +1,8 @@
-import urllib2 as u
+import sys
+if sys.version_info.major == 3:
+    import urllib.request as u
+else:
+    import urllib2 as u
 
 from refreshbooks import exceptions as exc
 
@@ -15,5 +19,5 @@ class Transport(object):
         )
         try:
             return u.urlopen(request).read()
-        except u.HTTPError, e:
+        except u.HTTPError as e:
             raise exc.TransportException(e.code, e.read())
