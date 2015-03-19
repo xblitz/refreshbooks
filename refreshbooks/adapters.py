@@ -1,11 +1,15 @@
 from lxml import etree, objectify
 import decimal
+import sys
 
 from refreshbooks import elements, client
 
 # To make life nicer for clients, allow built-in numeric-alike types
 # in API parameters.
-_stringable_types = frozenset([float, int, decimal.Decimal])
+if sys.version_info.major >= 3:
+    _stringable_types = frozenset([float, int, decimal.Decimal])
+else:
+    _stringable_types = frozenset([float, int, long, decimal.Decimal])
 
 def encode_as_simple_from_element(name, value):
     """Creates an etree element following the simple field convention. To 
