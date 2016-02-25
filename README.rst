@@ -1,5 +1,7 @@
 Refreshbooks provides a simple synchronous API for manipulating FreshBooks 
-invoices, clients, and other data::
+invoices, clients, and other data:
+
+.. code:: python
 
     from refreshbooks import api
     
@@ -52,7 +54,9 @@ does not handle negotiating for an OAuth token+secret pair; see the
 `oauth` module or the OAuth specification for details.
 
 This library also supports the older token-based API authorization 
-scheme::
+scheme:
+
+.. code:: python
 
     c = api.TokenClient(
         'example.freshbooks.com',
@@ -68,11 +72,15 @@ underlying XML.
 
 If you are having trouble accessing items as in:
 
+.. code:: python
+
     items_response = c.items.list()
     for item in items_response.items.item:
         print item.item_id
 
 Adjust your syntax to use dictionary item lookup:
+
+.. code:: python
 
     items_response = c.items.list()
     for item in items_response['items'].item:
