@@ -25,12 +25,14 @@ class RemoteMethod(object):
             self.response_decoder
         )
 
+
 class FailedRequest(Exception):
     def __init__(self, error):
         self.error = error
     
     def __str__(self):
         return repr(self.error)
+
 
 class Client(object):
     """The Freshbooks API client. Callers should use one of the factory

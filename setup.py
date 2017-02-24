@@ -2,6 +2,7 @@ try:
     from setuptools import setup, find_packages
 except ImportError:
     from ez_setup import use_setuptools
+
     use_setuptools()
     from setuptools import setup, find_packages
 
@@ -13,9 +14,9 @@ setup(
     url='http://github.com/freshbooks/refreshbooks',
     download_url='http://pypi.python.org/pypi/refreshbooks/',
     description='A client library for the FreshBooks API',
-    
+
     long_description=open("README.rst").read(),
-    
+
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
@@ -23,11 +24,11 @@ setup(
         'Operating System :: OS Independent',
         'Topic :: Software Development :: Libraries :: Python Modules'
     ],
-    
+
     packages=[
-        'refreshbooks', 'refreshbooks.transports', 'refreshbooks.optional'
+        'refreshbooks', 'refreshbooks.optional'
     ],
-    
+
     setup_requires=[
         'setuptools-git',
         'nose'
@@ -37,13 +38,11 @@ setup(
         'mock'
     ],
     install_requires=[
-        'lxml',
+        'requests', 'xmltodict',
     ],
     extras_require={
         'oauth': ['oauth'],
-        'httplib2': ['httplib2 >= 0.7.2'],
-        'requests': ['requests >= 0.11.1']
     },
-    
-    test_suite = 'nose.collector'
+
+    test_suite='nose.collector'
 )

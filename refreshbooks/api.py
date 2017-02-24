@@ -1,12 +1,9 @@
 from __future__ import print_function
 
-import decimal
 import sys
-import functools
+import xmltodict
 
-from lxml import objectify
-
-from refreshbooks import client, adapters, transport
+from refreshbooks import client, transport
 
 try:
     from refreshbooks.optional import oauth as os
@@ -14,6 +11,7 @@ try:
 except ImportError:
     def _create_oauth_client(*args, **kwargs):
         raise NotImplementedError('oauth support requires the "oauth" module.')
+
 
 def api_url(domain):
     """Returns the Freshbooks API URL for a given domain.
@@ -24,29 +22,24 @@ def api_url(domain):
     return "https://%s/api/2.1/xml-in" % (domain, )
 
 
-class DecimalElement(objectify.ObjectifiedDataElement):
-    @property
-    def pyval(self):
-        return decimal.Decimal(self.text)
+def xml_request(method, **kwargs):
+    kwargs['@method'] = method
+    return xmltodict.unparse(dict(request=kwargs), pretty=True)
 
-def check_decimal_element(decimal_string):
-    """Catch decimal's exception and raise the one objectify expects"""
-    try:
-        decimal.Decimal(decimal_string)
-    except decimal.InvalidOperation:
-        raise ValueError
 
-# register the decimal type with objectify
-decimal_type = objectify.PyType('decimal', check_decimal_element, 
-                                DecimalElement)
-decimal_type.register(before='float')
+def fail_to_exception_response(response):
+    if response['@status'] == 'fail':
+        raise client.FailedRequest(response['error'])
+    return response
 
-default_request_encoder = adapters.xml_request
+default_request_encoder = xml_request
+
 
 def default_response_decoder(*args, **kwargs):
-    return adapters.fail_to_exception_response(
-        objectify.fromstring(*args, **kwargs)
+    return fail_to_exception_response(
+        xmltodict.parse(*args, **kwargs)['response']
     )
+
 
 def logging_request_encoder(method, **params):
     encoded = default_request_encoder(method, **params)
@@ -56,11 +49,13 @@ def logging_request_encoder(method, **params):
     
     return encoded
 
+
 def logging_response_decoder(response):
     print("--- Response ---", file=sys.stderr)
     print(response, file=sys.stderr)
     
     return default_response_decoder(response)
+
 
 def build_headers(authorization_headers, user_agent):
     headers = transport.KeepAliveHeaders(authorization_headers)
@@ -68,6 +63,7 @@ def build_headers(authorization_headers, user_agent):
         headers = transport.UserAgentHeaders(headers, user_agent)
     
     return headers
+
 
 def AuthorizingClient(
     domain,
@@ -90,6 +86,7 @@ def AuthorizingClient(
         http_transport,
         response_decoder
     )
+
 
 def TokenClient(
     domain,
@@ -118,6 +115,7 @@ def TokenClient(
         response_decoder,
         user_agent=user_agent
     )
+
 
 def OAuthClient(
     domain,
@@ -152,27 +150,3 @@ def OAuthClient(
         request_encoder=request_encoder,
         response_decoder=response_decoder
     )
-
-def list_element_type(_name, **kwargs):
-    """Convenience function for creating tuples that satisfy
-    adapters.encode_as_list_of_dicts().
-    
-        >>> list_element_type('foo', a='5')
-        ('foo', {'a': '5'})
-    """
-    return _name, kwargs
-
-class Types(object):
-    """Convenience factory for list elements in API requests.
-    
-        >>> types = Types()
-        >>> types.line(id="5")
-        ('line', {'id': '5'})
-    
-    A module-scoped instance is available as refreshbooks.api.types.
-    """
-    
-    def __getattr__(self, name):
-        return functools.partial(list_element_type, name)
-
-types = Types()
