@@ -21,7 +21,7 @@ class Transport(object):
         resp = self.session.post(
             self.url,
             headers=self.headers_factory(),
-            data=entity
+            data=entity.encode('utf-8')
         )
         if resp.status_code >= 400:
             raise exceptions.TransportException(resp.status_code, resp.content)
