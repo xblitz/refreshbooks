@@ -24,7 +24,7 @@ def api_url(domain):
 
 def xml_request(method, **kwargs):
     kwargs['@method'] = method
-    return xmltodict.unparse(dict(request=kwargs), pretty=True)
+    return xmltodict.unparse(dict(request=kwargs))
 
 
 def fail_to_exception_response(response):
